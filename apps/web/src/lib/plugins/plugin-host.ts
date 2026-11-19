@@ -53,7 +53,7 @@ import {
   toWorkspaceExtensionUpsert,
   type PluginCatalogAdapter,
 } from "@/lib/plugins/plugin-catalog-sync";
-import { loadPluginMarketplace } from "@/lib/plugins/plugin-marketplace";
+import { loadResolvedPluginMarketplace } from "@/lib/plugins/plugin-marketplace";
 import { hasAcknowledgedPluginTrustWarning } from "@/lib/plugins/plugin-trust";
 import { subscribeRepositoryMutations, type RepositoryMutationEvent } from "@/lib/repository-events";
 import type { WorkspaceExtension } from "@edgeever/shared";
@@ -551,9 +551,7 @@ export class EdgeEverPluginHost {
     this.catalogErrors = [];
     let officialIds = new Set<string>();
     try {
-      // Reconciliation only needs the bundled publisher/id trust list, not
-      // a new GitHub release lookup and package download for every focus.
-      const marketplace = await loadPluginMarketplace();
+      const marketplace = await loadResolvedPluginMarketplace();
       officialIds = new Set(
         marketplace.entries.filter((entry) => entry.publisher === "edgeever").map((entry) => entry.id),
       );
